@@ -117,17 +117,29 @@ class Channel(models.Model):
                 fast_api_response = elapsed_time < recipient_agent.simulated_delay_min
 
                 delayables = []
+
+                # Handle both list and dict responses
+                if isinstance(response, dict):
+                    response = [response]
+
                 for index, item in enumerate(response):
                     if not isinstance(item, dict):
                         item = {}
 
-                    response_message_body = item.get(
-                        recipient_agent.custom_api_response_key,
-                        _(
+                    # Handle nested response structure
+                    response_value = item.get(recipient_agent.custom_api_response_key)
+                    if (
+                        isinstance(response_value, dict)
+                        and recipient_agent.custom_api_response_key in response_value
+                    ):
+                        response_message_body = response_value[
+                            recipient_agent.custom_api_response_key
+                        ]
+                    else:
+                        response_message_body = response_value or _(
                             "Communication with this AI Agent didn't work this "
                             "time, please ask your provider for more details."
-                        ),
-                    )
+                        )
 
                     message_data = {
                         "body": response_message_body,
