@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <t
+        t-name="ai_oca_bridge.ChatterTopbar"
+        t-inherit="mail.Chatter"
+        t-inherit-mode="extension"
+    >
+        <xpath
+            expr="//span[@class='o-mail-Chatter-topbarGrow flex-grow-1 pe-2']"
+            position="before"
+        >
+            <ChatterAITopbar
+                record="this"
+                t-if="props.threadId and state.thread and state.thread.model and state.thread.ai_bridge_info and state.thread.ai_bridge_info.length > 0"
+            />
+        </xpath>
+    </t>
+</templates>
