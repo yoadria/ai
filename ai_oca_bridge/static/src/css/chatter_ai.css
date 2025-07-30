@@ -1,0 +1,19 @@
+/* Estilos para el botón AI en el chatter */
+.o_ChatterTopbar_AIButton {
+    margin-left: 4px;
+    margin-top: 8px;
+}
+
+.o_ChatterTopbar_AIButton .btn {
+    height: 32px;
+    min-height: 32px;
+    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.o_ChatterTopbar_AIButton .fa-bolt {
+    font-size: 14px;
+    line-height: 1;
+}
