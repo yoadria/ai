@@ -21,6 +21,7 @@
     ],
     "assets": {
         "web.assets_backend": [
+            "ai_oca_bridge/static/src/chatter_ai_registry.esm.js",
             "ai_oca_bridge/static/src/**/*.xml",
             "ai_oca_bridge/static/src/**/*.esm.js",
         ],

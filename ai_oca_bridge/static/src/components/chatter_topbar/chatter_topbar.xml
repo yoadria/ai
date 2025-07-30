@@ -11,7 +11,7 @@
         >
             <ChatterAITopbar
                 record="this"
-                t-if="props.threadId and state.thread and state.thread.model and state.thread.ai_bridge_info and state.thread.ai_bridge_info.length > 0"
+                t-if="props.webRecord and props.webRecord.data.ai_bridge_info and props.webRecord.data.ai_bridge_info.length > 0"
             />
         </xpath>
     </t>
