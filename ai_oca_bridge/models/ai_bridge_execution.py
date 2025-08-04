@@ -154,24 +154,27 @@ class AiBridgeExecution(models.Model):
 
     def _get_auth(self):
         """Return authentication for the request."""
-        if self.ai_bridge_id.auth_type == "none":
-            return None
-        elif self.ai_bridge_id.auth_type == "basic":
+        if self.ai_bridge_id.auth_type == "basic":
             return (
                 self.ai_bridge_id.sudo().auth_username,
                 self.ai_bridge_id.sudo().auth_password,
             )
-        elif self.ai_bridge_id.auth_type == "token":
-            return {"Authorization": f"Bearer {self.ai_bridge_id.sudo().auth_token}"}
+        elif self.ai_bridge_id.auth_type in ["none", "token"]:
+            return None
         else:
             raise ValueError(_("Unsupported authentication type."))
 
     def _get_headers(self):
         """Return headers for the request."""
-        return {
+        headers = {
             "Content-Type": "application/json",
             "Accept": "application/json",
         }
+        if self.ai_bridge_id.auth_type == "token":
+            headers.update(
+                {"Authorization": f"Bearer {self.ai_bridge_id.sudo().auth_token}"}
+            )
+        return headers
 
     def _generate_token(self):
         """Generate a token for async operations."""
