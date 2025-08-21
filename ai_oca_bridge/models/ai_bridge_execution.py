@@ -200,7 +200,18 @@ class AiBridgeExecution(models.Model):
         return {}
 
     def _process_response_message(self, response):
-        return {"id": self._get_channel().sudo().message_post(**response).id}
+        try:
+            response = {"id": self._get_channel().message_post(**response).id}
+        except Exception as e:
+            error_response = {
+                "body": _(
+                    "There has been an error processing the response: %s", str(e)
+                ),
+                "message_type": "comment",
+                "subtype_xmlid": "mail.mt_comment",
+            }
+            response = {"id": self._get_channel().message_post(**error_response).id}
+        return response
 
     def _process_response_action(self, response):
         if response.get("action"):
@@ -214,5 +225,5 @@ class AiBridgeExecution(models.Model):
 
     def _get_channel(self):
         if self.model_id and self.res_id:
-            return self.env[self.model_id.model].browse(self.res_id)
+            return self.env[self.model_id.sudo().model].browse(self.res_id)
         return None
