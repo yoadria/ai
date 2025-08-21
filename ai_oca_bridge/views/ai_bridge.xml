@@ -30,6 +30,13 @@
                             />
                             <field name="result_type" />
                             <field
+                                name="user_execution_behavior"
+                            />
+                            <field
+                                name="user_predefined"
+                                attrs="{'invisible': [('user_execution_behavior', '!=', 'predefined_user')]}"
+                            />
+                            <field
                                 name="model_id"
                                 options="{'no_create': True, 'no_create_edit': True}"
                                 domain="[('ai_usage', '=', usage)]"

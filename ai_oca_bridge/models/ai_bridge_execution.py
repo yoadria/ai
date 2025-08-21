@@ -5,6 +5,7 @@ import json
 import traceback
 from datetime import timedelta
 from io import StringIO
+from odoo.exceptions import UserError
 
 import requests
 from werkzeug import urls
@@ -190,8 +191,13 @@ class AiBridgeExecution(models.Model):
         """Process the response from the AI bridge."""
         self.ensure_one()
         self.expiration_date = None
+        if self.ai_bridge_id.user_execution_behavior == "user_executor":
+            user_id = self.payload["_odoo"]["user_id"]
+        else:
+            user_id = self.ai_bridge_id.user_predefined
+
         return getattr(
-            self.with_user(self.ai_bridge_id.user_id.id),
+            self.with_user(user_id),
             f"_process_response_{self.ai_bridge_id.result_type}",
             self._process_response_none,
         )(response)
@@ -200,17 +206,22 @@ class AiBridgeExecution(models.Model):
         return {}
 
     def _process_response_message(self, response):
+        import wdb
+        wdb.set_trace()
+        # a = self.env[self.model_id.sudo().model].browse(self.res_id)
+        # a.message_post(**response)
         try:
             response = {"id": self._get_channel().message_post(**response).id}
         except Exception as e:
-            error_response = {
+            response = {"error": "mensaje de error para la IA"}
+            error = {
                 "body": _(
-                    "There has been an error processing the response: %s", str(e)
+                    "There has been an error processing the response: %s with user ....", str(e)
                 ),
                 "message_type": "comment",
                 "subtype_xmlid": "mail.mt_comment",
             }
-            response = {"id": self._get_channel().message_post(**error_response).id}
+            response = {"id": self._get_channel().sudo().message_post(**error).id}
         return response
 
     def _process_response_action(self, response):

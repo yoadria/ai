@@ -41,6 +41,13 @@ class AiBridge(models.Model):
     name = fields.Char(required=True, translate=True)
     active = fields.Boolean(default=True)
     description = fields.Html(translate=True)
+
+    user_execution_behavior = fields.Selection([
+            ('user_executor', 'Run as the user who executes it'),
+            ('predefined_user', 'Run as a predefined user'),
+        ], string='Execution Behavior', default='user_executor')
+    user_predefined = fields.Many2one("res.users")
+
     user_id = fields.Many2one(
         "res.users",
         default=lambda self: self.env.user,
