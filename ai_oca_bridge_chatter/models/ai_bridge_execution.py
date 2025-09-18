@@ -1,24 +1,11 @@
 # Copyright 2025 Dixmit
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from markdown import markdown
-from markupsafe import Markup
-
 from odoo import _, fields, models
-
-MARKDOWN_EXTENSIONS = [
-    "markdown.extensions.fenced_code",
-    "markdown.extensions.codehilite",
-    "markdown.extensions.tables",
-    "markdown.extensions.sane_lists",
-    "markdown.extensions.smarty",
-    "markdown.extensions.nl2br",
-    "markdown.extensions.extra",
-]
 
 
 class AiBridgeExecution(models.Model):
-    _inherit = "ai.bridge.execution"
+    _inherit = ["ai.bridge.execution", "ai.markdown.mixin"]
 
     chatter_user_id = fields.Many2one("res.users", readonly=True)
 
@@ -54,8 +41,3 @@ class AiBridgeExecution(models.Model):
             response["body"] = self._format_response_message(response["body"])
 
         return super()._process_response_message(response)
-
-    def _format_response_message(self, content):
-        if content:
-            return Markup(markdown(content, extensions=MARKDOWN_EXTENSIONS))
-        return content

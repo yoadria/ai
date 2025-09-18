@@ -1,3 +1,4 @@
+from . import markdown_mixin
 from . import ai_bridge
 from . import ai_bridge_execution
 from . import res_partner
